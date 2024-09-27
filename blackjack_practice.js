@@ -1,5 +1,6 @@
 let Sum_Player = 0;
 let Sum_Bank = 0;
+let isFinish = false;
 
 while(Sum_Bank < 17)
 {
@@ -9,29 +10,34 @@ while(Sum_Bank < 17)
     if(Sum_Player === 21)
     {
         console.log("You Win");
+        isFinish = true;
         break;
     }
     
-    if(Sumplayer > 21)
+    if(Sum_Player > 21)
     {
         console.log("You Lose");
+        isFinish = true;
         break;
     }
 }
 
-if(Sum_Player === Sum_Bank)
+if(!isFinish)
 {
-    console.log("Draw");
-}
-else if(Sum_Bank > 21)
-{
-    console.log("You Win");
-}
-else if(Sum_Player > Sum_Bank)
-{
-    console.log("You Win");
-}
-else
-{
-    console.log("You lose");
+    if(Sum_Player === Sum_Bank)
+    {
+        console.log("Draw");
+    }
+    else if(Sum_Bank > 21)
+    {
+        console.log("You Win");
+    }
+    else if(Sum_Player > Sum_Bank)
+    {
+        console.log("You Win");
+    }
+    else
+    {
+        console.log("You lose");
+    }
 }
