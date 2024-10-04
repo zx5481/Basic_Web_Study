@@ -23,6 +23,7 @@ while(Sum_Bank < 17)
         if(Sum_Bank > 21)
         {
             console.log("Draw");
+            isFinish = true;
             break;
         }
         else
