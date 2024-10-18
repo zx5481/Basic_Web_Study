@@ -54,7 +54,7 @@ function dragElement(terrariumElement)
     {
         e.preventDefault();
         console.log(e);
-        terrariumElement.style.zIndex = 3;
+        terrariumElement.style.zIndex += 3;
     }
 
     
