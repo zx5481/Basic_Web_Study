@@ -20,6 +20,7 @@ function dragElement(terrariumElement)
     pos2 = 0,
     pos3 = 0,
     pos4 = 0;
+    let element_z = 3;
     terrariumElement.onpointerdown = pointerDrag;
     terrariumElement.ondblclick = ElementDbclick;
 
@@ -54,10 +55,8 @@ function dragElement(terrariumElement)
     {
         e.preventDefault();
         console.log(e);
-        terrariumElement.style.zIndex += 3;
+        terrariumElement.style.zIndex = ++element_z;
     }
-
-    
 }
 
    
