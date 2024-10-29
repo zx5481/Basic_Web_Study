@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Message</title>
+    </head>
+    <body>
+        <script>
+            function Introduce1()
+            {
+                document.write("<br>");
+                document.write("안녕하세요.");
+            }
+            function Introduce2()
+            {
+                document.write("<br>");
+                document.write("제 이름은 김영훈입니다.\n");
+            }
+            function Introduce3()
+            {
+                document.write("<br>");
+                document.write("제주대학교 소프트웨어학부 컴퓨터공학 소속입니다.\n");
+            }
+            function Introduce4()
+            {
+                document.write("<br>");
+                document.write("올해 편입한 3학년입니다.")
+            }
+
+            let myString1 = "Hello";
+            let myString2 = "World";
+            let count = 0;
+
+            console.log(myString1 + " " + myString2 + "!");
+
+            let interval = setInterval
+                (function()
+                    {
+                        count++;
+                        if(count === 5)
+                        {
+                            clearInterval(interval);
+                            setTimeout(Introduce1, 3000);
+                            setTimeout(Introduce2, 6000);
+                            setTimeout(Introduce3, 9000);
+                            setTimeout(Introduce4, 12000);
+                        }
+                        document.write(`${myString1} ${myString2}!`);
+                    }
+                    , 1000
+                )
+        </script>
+    </body>
+</html>
