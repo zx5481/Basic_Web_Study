@@ -25,6 +25,16 @@ const startButton = document.getElementById('start');
 const textInput = document.getElementById('input');
 startButton.disabled = false;
 
+const modal = document.querySelector('.modal');
+const finishElement = document.getElementById('finish');
+
+const vibration = (target) => {
+    target.classList.add("vibration");
+  
+    setTimeout(function() {
+      target.classList.remove("vibration");
+    }, 400);
+  }
 
 document.getElementById('start').addEventListener('click',() => {
     startButton.disabled = true;
@@ -52,24 +62,42 @@ typedValueElement .addEventListener('input', () => {
     if (typedValue === currentWord && wordIndex === words.length - 1) { // 마지막 단어까지 정확히 입력했는 지 체크
     const elapsedTime = new Date().getTime() - startTime ; // 타이핑에 소요된 시간 계산
     const message = `CONGRATULATIONS! You finished in ${elapsedTime / 1000} seconds.` ; // 타이핑 완료 메시지
+    modal.style.display="flex";
     startButton.disabled = false;
     typedValueElement.disabled = true;
     messageElement.innerText = message; //생성된 메시지 화면에 표시
+    finishElement.innerText = message;
+    const IndexlocalStorage = 0;
+    if(localStorage.getItem(IndexlocalStorage) == null)
+    {
+        localStorage.setItem(IndexlocalStorage, elapsedTime / 1000)
+    }
+    else if(elapsedTime / 1000 < localStorage.getItem(IndexlocalStorage))
+    {
+        localStorage.removeItem(IndexlocalStorage)
+        localStorage.setItem(IndexlocalStorage, elapsedTime / 1000)
+    }
+        finishElement.innerText += `\nBest Score: ${localStorage.getItem(IndexlocalStorage)}`
+        modal.addEventListener("click", e => {
+            const evTarget = e.target
+            if(evTarget.classList.contains("modal")) {
+                modal.style.display = "none"
+            }
+        });
     } else if (typedValue .endsWith(' ') && typedValue .trim() === currentWord ) { // 입력된 값이 공백으로 끝났는지와 공백을 제거한 값이 현재 단어와 일치하는 지 확인
     typedValueElement .value = ''; // 입력 필드 초기화하여 다음 단어 입력 준비
-    // 실습 수정 부분
-    // wordLength += quotes[wordIndex].length;
-    // spaceText.padStart(wordLength, ">");
-    // lengthElement.innerText = spaceText;
-    // 실습 수정 부분
     wordIndex ++; // 다음 단어로 이동
     for (const wordElement of quoteElement .childNodes ) { // 모든 강조 표시 제거
     wordElement .className = ''; // 클래스 제거
     }
     quoteElement .childNodes [wordIndex].className = 'highlight'; // 다음으로 타이핑할 단어에 클래스 추가
-    } else if (currentWord .startsWith( typedValue )) { //현재 단어의 일부를 맞게 입력하고 있는 지 확인
-    typedValueElement .className = ''; // 올바르면 클래스 제거
+    }
+     else if (currentWord .startsWith( typedValue )) { //현재 단어의 일부를 맞게 입력하고 있는 지 확인
+        typedValueElement .className = ''; // 올바르면 클래스 제거
+        typedValueElement .className = 'correct';
     } else {
-    typedValueElement .className = 'error'; // 틀리면 error 클래스 추가
+        typedValueElement .className = '';
+        typedValueElement .className = 'error'; // 틀리면 error 클래스 추가
+        vibration(typedValueElement)
     }
 });
