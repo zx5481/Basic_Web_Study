@@ -33,5 +33,4 @@ document.querySelectorAll('.plant').forEach(plant =>
     {
         plant.style.zIndex = zIndex++;
     })
-}
-)
+});
