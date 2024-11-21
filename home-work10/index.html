@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <script src="./jquery-3.5.1.min.js"></script>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div id="container">
+            <div id="status">고양이 기억력 테스트</div>
+            <div id="puzzle"></div>
+            <div id="btn_wrap">
+                <button id="startbutton" class="button" style="vertical-align:middle"><span>시작 </span></button>
+            </div>
+            <script id="template_cell" type="template/html">
+                <div class="cell">
+                    <ul>
+                        <li><img src="img/Cat.png"></li>
+                        <li>-1</li>
+                    </ul>
+                </div>
+            </script>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>

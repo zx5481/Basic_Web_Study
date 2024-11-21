@@ -1,0 +1,22 @@
+{
+    "manifest_version": 3,
+    "name": "Matching Game with Cat",
+    "version": "1.0",
+    "description": "Let's play Matching Game with Cat",
+    "permissions": ["declarativeContent"],
+    "icons": {
+    "16": "img/Cat.png",
+    "32": "img/Cat.png",
+    "48": "img/Cat.png",
+    "128": "img/Cat.png"
+  },
+    "action": {
+        "default_popup": "./index.html"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": ["./jquery-3.5.1.min.js"],
+            "matches": ["<all_urls>"]
+        }
+    ]
+}
