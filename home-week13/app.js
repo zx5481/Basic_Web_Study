@@ -399,6 +399,8 @@ let canvas, ctx,
     MONSTER_BOSS,
     eventEmitter = new EventEmitter();
 
+let scoreHero = 0;
+
 window.addEventListener('keydown', onKeyDown);
 
 window.addEventListener("keydown", (evt) => {
@@ -473,6 +475,14 @@ function drawInterface()
     drawKill();
     drawStage();
     drawDeadCount();
+}
+
+function drawResult()
+{
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "red";
+    ctx.textAlign = "left";
+    drawText("Points: " + hero.points, canvas.width / 2 - 50, canvas.height / 2 + 30)
 }
 
 function isHeroDead()
@@ -654,19 +664,26 @@ window.onload = async() =>
         gameObjects = [];
         createEnemiesDraw();
         createHero();
+        hero.points = scoreHero;
         
         let controlSpeed = 20;
         enemy.deadCount = 0;
 
         eventEmitter.on(Messages.KEY_EVENT_UP, () => {
-            hero.y -=controlSpeed;
-            heroSub1.y -= controlSpeed;
-            heroSub2.y -= controlSpeed;
+            if(hero.y + controlSpeed - 25 > 0)
+            {
+                hero.y -=controlSpeed;
+                heroSub1.y -= controlSpeed;
+                heroSub2.y -= controlSpeed;
+            }
         })
         eventEmitter.on(Messages.KEY_EVENT_DOWN, () => {
-            hero.y += controlSpeed;
-            heroSub1.y += controlSpeed;
-            heroSub2.y += controlSpeed;
+            if(hero.y + hero.width < canvas.height)
+            {
+                hero.y += controlSpeed;
+                heroSub1.y += controlSpeed;
+                heroSub2.y += controlSpeed;
+            }
         });
         eventEmitter.on(Messages.KEY_EVENT_LEFT, () => {
             if(hero.x - controlSpeed > 0)
@@ -911,17 +928,20 @@ window.onload = async() =>
                     "Victory!!! Pew Pew... - Press [Enter] to start a new game Captain Pew Pew",
                     "green"
                 );
+                drawResult();
                 stageCount = 1;
             }
             else
             {
                 stageCount++;
+                scoreHero = hero.points;
                 resetGame()
             }
         } else {
         displayMessage(
         "You died !!! Press [Enter] to start a new game Captain Pew Pew"
         );
+        drawResult();
         stageCount = 1;
         }
         }, 200) 
