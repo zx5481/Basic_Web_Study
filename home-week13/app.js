@@ -477,10 +477,10 @@ function drawInterface()
     drawDeadCount();
 }
 
-function drawResult()
+function drawResult(color)
 {
     ctx.font = "30px Arial";
-    ctx.fillStyle = "red";
+    ctx.fillStyle = color;
     ctx.textAlign = "left";
     drawText("Points: " + hero.points, canvas.width / 2 - 50, canvas.height / 2 + 30)
 }
@@ -928,7 +928,7 @@ window.onload = async() =>
                     "Victory!!! Pew Pew... - Press [Enter] to start a new game Captain Pew Pew",
                     "green"
                 );
-                drawResult();
+                drawResult("green");
                 stageCount = 1;
             }
             else
@@ -941,7 +941,7 @@ window.onload = async() =>
         displayMessage(
         "You died !!! Press [Enter] to start a new game Captain Pew Pew"
         );
-        drawResult();
+        drawResult("red");
         stageCount = 1;
         }
         }, 200) 
