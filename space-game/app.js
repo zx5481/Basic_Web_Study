@@ -34,21 +34,19 @@ class GameObject {
     this.height = 0; // 객체의 높이
     this.img = undefined; // 객체의 이미지
     }
-    rectFromGameObject()
-    {
-        return{
-        top: this.y,
-        left: this.x,
-        bottom: this.y + this.height,
-        right: this.x + this.width,
-        };
+    rectFromGameObject() {
+    return {
+    top: this.y,
+    left: this.x,
+    bottom: this.y + this.height,
+    right: this.x + this.width,
+    };
     }
     
-    draw(ctx)
-    {
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height); // 캔버스에 이미지 그리기
+    draw(ctx) {
+    ctx.drawImage(this.img, this.x, this.y, this.width, this.height); // 캔버스에 이미지 그리기
     }
-}
+   }
 
 class Hero extends GameObject {
     constructor(x, y) {
@@ -61,9 +59,7 @@ class Hero extends GameObject {
     this.points = 0;
 
     }
-
-    fire()
-    {
+    fire() {
         if (this.canFire()) {
         gameObjects.push(new Laser(this.x + 45, this.y - 10)); // 레이저 발사
         this.cooldown = 500; // 쿨다운 500ms
@@ -78,24 +74,20 @@ class Hero extends GameObject {
         }
     }
 
-    canFire()
-    {
+    canFire() {
         return this.cooldown === 0; // 쿨다운이 끝났는지 확인
     }
      
-    incrementPoints()
-    {
-        this.points += 100;
-    }
-
-    decrementLife()
-    {
+    decrementLife() {
         this.life--;
-        if (this.life === 0)
-        {
-            this.dead = true;
+        if (this.life === 0) {
+        this.dead = true;
         }
-    }
+       }
+
+    incrementPoints() {
+        this.points += 100;
+        }
 }
 
 class HeroSub extends GameObject {
@@ -160,15 +152,14 @@ class Enemy extends GameObject {
     this.height = 50;
     this.type = "Enemy";
     // 적 캐릭터의 자동 이동 (Y축 방향)
-    let id = setInterval(() =>
-        {
-            if (this.y < canvas.height - this.height) {
-            this.y += 5; // 아래로 이동
-            } else {
-            console.log('Stopped at', this.y);
-            clearInterval(id); // 화면 끝에 도달하면 정지
-            }
-        }, 300);
+    let id = setInterval(() => {
+    if (this.y < canvas.height - this.height) {
+    this.y += 5; // 아래로 이동
+    } else {
+    console.log('Stopped at', this.y);
+    clearInterval(id); // 화면 끝에 도달하면 정지
+    }
+    }, 300);
     }
 }
 
@@ -198,6 +189,7 @@ const Messages = {
     GAME_END_LOSS: "GAME_END_LOSS",
     GAME_END_WIN: "GAME_END_WIN",
     KEY_EVENT_ENTER: "KEY_EVENT_ENTER",
+
 };
 
 let heroImg, 
@@ -215,22 +207,19 @@ window.addEventListener('keydown', onKeyDown);
 window.addEventListener("keyup", (evt) => {
     if (evt.key === "ArrowUp") {
     eventEmitter.emit(Messages.KEY_EVENT_UP);
-    }
-    else if (evt.key === "ArrowDown") {
-        eventEmitter.emit(Messages.KEY_EVENT_DOWN);
-    }
-    else if (evt.key === "ArrowLeft") {
-        eventEmitter.emit(Messages.KEY_EVENT_LEFT);
-    }
-    else if (evt.key === "ArrowRight") {
-        eventEmitter.emit(Messages.KEY_EVENT_RIGHT);
-    }
-    else if(evt.keyCode === 32) {
-        eventEmitter.emit(Messages.KEY_EVENT_SPACE);
+    } else if (evt.key === "ArrowDown") {
+    eventEmitter.emit(Messages.KEY_EVENT_DOWN);
+    } else if (evt.key === "ArrowLeft") {
+    eventEmitter.emit(Messages.KEY_EVENT_LEFT);
+    } else if (evt.key === "ArrowRight") {
+    eventEmitter.emit(Messages.KEY_EVENT_RIGHT);
+    } else if(evt.keyCode === 32) {
+    eventEmitter.emit(Messages.KEY_EVENT_SPACE);
     }
     else if(evt.key === "Enter") {
         eventEmitter.emit(Messages.KEY_EVENT_ENTER);
-    }
+       }
+       
 });
 
 function drawLife() {
@@ -275,6 +264,8 @@ function displayMessage(message, color = "red")
     ctx.fillText(message, canvas.width / 2, canvas.height / 2);
 }
 
+
+
 function loadTexture(path)
 {
     return new Promise
@@ -288,50 +279,45 @@ function loadTexture(path)
     })
 }
    
-function intersectRect(r1, r2)
-{
+function intersectRect(r1, r2) {
     return !(
     r2.left > r1.right || // r2가 r1의 오른쪽에 있음
     r2.right < r1.left || // r2가 r1의 왼쪽에 있음
     r2.top > r1.bottom || // r2가 r1의 아래에 있음
     r2.bottom < r1.top // r2가 r1의 위에 있음
     );
-}
+   }
 
 
 function updateGameObjects() {
     const enemies = gameObjects.filter((go) => go.type === "Enemy");
     const lasers = gameObjects.filter((go) => go.type === "Laser");
-
     const heroSubs = gameObjects.filter((go) => go.type === "HeroSub");
-
-    gameObjects = gameObjects.filter((go) => !go.dead);
     heroSubs.forEach((sub) => sub.fire());
 
     lasers.forEach((l) => {
-        enemies.forEach((m) =>
-        {
-                if (intersectRect(l.rectFromGameObject(), m.rectFromGameObject())) {
-                    eventEmitter.emit(Messages.COLLISION_ENEMY_LASER,{
-                        first: l,
-                        second: m,
-                    });
-                    let ShotSpot_x = m.x;
-                    let ShotSpot_y = m.y;
-                    laserGreenShot = new LaserGreenShot(ShotSpot_x, ShotSpot_y);
-                    laserGreenShot.img = laserGreenShotImg;
-                    gameObjects.push(laserGreenShot);
-                }
-        });           
-    });
-    enemies.forEach(enemy =>
-        {
-            const heroRect = hero.rectFromGameObject();
-            if (intersectRect(heroRect, enemy.rectFromGameObject()))
-            {
-                eventEmitter.emit(Messages.COLLISION_ENEMY_HERO, { enemy });
+        enemies.forEach((m) => {
+            if (intersectRect(l.rectFromGameObject(), m.rectFromGameObject())) {
+                eventEmitter.emit(Messages.COLLISION_ENEMY_LASER, {
+                first: l,
+                second: m,
+                });
+                let ShotSpot_x = m.x;
+                let ShotSpot_y = m.y;
+                laserGreenShot = new LaserGreenShot(ShotSpot_x, ShotSpot_y);
+                laserGreenShot.img = laserGreenShotImg;
+                gameObjects.push(laserGreenShot);
             }
-        })
+        });
+    });
+    enemies.forEach(enemy => {
+        const heroRect = hero.rectFromGameObject();
+        if (intersectRect(heroRect, enemy.rectFromGameObject()))
+        {
+            eventEmitter.emit(Messages.COLLISION_ENEMY_HERO, { enemy });
+        }
+    })
+    gameObjects = gameObjects.filter((go) => !go.dead);
 }
 
 window.onload = async() =>
@@ -343,6 +329,76 @@ window.onload = async() =>
     laserImg = await loadTexture("assets/laserRed.png");
     laserGreenShotImg = await loadTexture("assets/laserGreenShot.png");
     lifeImg = await loadTexture("assets/life.png");
+
+
+    function initGame() {
+        gameObjects = [];
+        createEnemies();
+        createHero();
+        
+        let controlSpeed = 20;
+
+        eventEmitter.on(Messages.KEY_EVENT_UP, () => {
+            hero.y -=controlSpeed;
+            heroSub1.y -= controlSpeed;
+            heroSub2.y -= controlSpeed;
+        })
+        eventEmitter.on(Messages.KEY_EVENT_DOWN, () => {
+            hero.y += controlSpeed;
+            heroSub1.y += controlSpeed;
+            heroSub2.y += controlSpeed;
+        });
+        eventEmitter.on(Messages.KEY_EVENT_LEFT, () => {
+            hero.x -= controlSpeed;
+            heroSub1.x -= controlSpeed;
+            heroSub2.x -= controlSpeed;
+        });
+        eventEmitter.on(Messages.KEY_EVENT_RIGHT, () => {
+            hero.x += controlSpeed;
+            heroSub1.x += controlSpeed;
+            heroSub2.x += controlSpeed;
+        });
+        eventEmitter.on(Messages.KEY_EVENT_SPACE, () => {
+            if (hero.canFire()) {
+                hero.fire();
+            }
+        });
+        eventEmitter.on(Messages.KEY_EVENT_ENTER, () => {
+            resetGame();
+           });
+           
+
+        eventEmitter.on(Messages.COLLISION_ENEMY_LASER, (_, { first, second }) => {
+            first.dead = true;
+            second.dead = true;
+
+            hero.incrementPoints();
+            if (isEnemiesDead())
+            {
+                eventEmitter.emit(Messages.GAME_END_WIN);
+            }
+        });
+
+        eventEmitter.on(Messages.COLLISION_ENEMY_HERO, (_, { enemy }) => {
+            enemy.dead = true;
+            hero.decrementLife();
+            if (isHeroDead()) {
+            eventEmitter.emit(Messages.GAME_END_LOSS);
+            return; // loss before victory
+            }
+            if (isEnemiesDead()) {
+            eventEmitter.emit(Messages.GAME_END_WIN);
+            }
+           });
+           eventEmitter.on(Messages.GAME_END_WIN, () => {
+            endGame(true);
+           });
+            
+           eventEmitter.on(Messages.GAME_END_LOSS, () => {
+            endGame(false);
+           });
+        
+    }
 
     function createEnemies() {
         const MONSTER_TOTAL = 5;
@@ -383,64 +439,7 @@ window.onload = async() =>
         gameObjects.push(heroSub2);
     }
 
-    function initGame()
-    {
-        gameObjects = [];
-        createEnemies();
-        createHero();
-        
-
-        eventEmitter.on(Messages.KEY_EVENT_UP, () => {
-            hero.y -=5 ;
-            heroSub1.y -= 5;
-            heroSub2.y -= 5;
-        })
-        eventEmitter.on(Messages.KEY_EVENT_DOWN, () => {
-            hero.y += 5;
-            heroSub1.y += 5;
-            heroSub2.y += 5;
-        });
-        eventEmitter.on(Messages.KEY_EVENT_LEFT, () => {
-            hero.x -= 5;
-            heroSub1.x -= 5;
-            heroSub2.x -= 5;
-        });
-        eventEmitter.on(Messages.KEY_EVENT_RIGHT, () => {
-            hero.x += 5;
-            heroSub1.x += 5;
-            heroSub2.x += 5;
-        });
-        eventEmitter.on(Messages.KEY_EVENT_SPACE, () => {
-            if (hero.canFire()) {
-                hero.fire();
-            }
-        });
-        
-        eventEmitter.on(Messages.COLLISION_ENEMY_LASER, (_, { first, second }) =>
-        {
-            first.dead = true;
-            second.dead = true;
-            hero.incrementPoints();
-        });
-
-        eventEmitter.on(Messages.COLLISION_ENEMY_HERO, (_, { enemy }) =>
-        {
-            enemy.dead = true;
-            hero.decrementLife();
-            if (isHeroDead())
-            {
-                eventEmitter.emit(Messages.GAME_END_LOSS);
-                return; // loss before victory
-            }
-            if (isEnemiesDead())
-            {
-                eventEmitter.emit(Messages.GAME_END_WIN);
-            }  
-        });
-        
-    }
-
-    
+    createEnemies(ctx, canvas, enemyImg);
 
     function drawGameObjects(ctx) {
         gameObjects.forEach(go => go.draw(ctx));
@@ -450,24 +449,20 @@ window.onload = async() =>
     {
         clearInterval(gameLoopId);
         // 게임 화면이 겹칠 수 있으니, 200ms 지연
-        setTimeout(() =>
-        {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "black";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            if (win)
-                {
-                displayMessage(
-                    "Victory!!! Pew Pew... - Press [Enter] to start a new game Captain Pew Pew",
-                    "green"
-                );
-            }
-            else
-            {
-                displayMessage(
-                    "You died !!! Press [Enter] to start a new game Captain Pew Pew"
-                );
-            }
+        setTimeout(() => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        if (win) {
+        displayMessage(
+        "Victory!!! Pew Pew... - Press [Enter] to start a new game Captain Pew Pew",
+        "green"
+        );
+        } else {
+        displayMessage(
+        "You died !!! Press [Enter] to start a new game Captain Pew Pew"
+        );
+        }
         }, 200) 
     }
 
@@ -478,11 +473,12 @@ window.onload = async() =>
             clearInterval(gameLoopId); // 게임 루프 중지, 중복 실행 방지
             eventEmitter.clear(); // 모든 이벤트 리스너 제거, 이전 게임 세션 충돌 방지
             initGame(); // 게임 초기 상태 실행
-            gameLoopId = setInterval(() =>
-            { // 100ms 간격으로 새로운 게임 루프 시작
+            gameLoopId = setInterval(() => { // 100ms 간격으로 새로운 게임 루프 시작
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = "black";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
+                drawPoints();
+                drawLife();
                 updateGameObjects();
                 drawGameObjects(ctx);
             }, 100);
@@ -499,23 +495,5 @@ window.onload = async() =>
         updateGameObjects();
         drawPoints();
         drawLife();
-        
-
-        eventEmitter.on(Messages.GAME_END_WIN, () =>
-        {
-            endGame(true);
-        });
-        
-        eventEmitter.on(Messages.GAME_END_LOSS, () =>
-        {
-            endGame(false);
-        });
-
-        eventEmitter.on(Messages.KEY_EVENT_ENTER, () =>
-        {
-            resetGame();
-        });
-               
-
     }, 100);
 };
